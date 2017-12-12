@@ -3,6 +3,7 @@
 namespace GitList\Git;
 
 use Gitter\Client as BaseClient;
+use Github\Client as GithubClient;
 
 class Client extends BaseClient
 {
@@ -34,7 +35,7 @@ class Client extends BaseClient
      * @return array Found repositories, containing their name, path and description sorted
      *               by repository name
      */
-    public function getRepositories($paths)
+    public function getRepositories($paths,$urls=array())
     {
         $allRepositories = [];
 
@@ -49,6 +50,20 @@ class Client extends BaseClient
              * Use "+" to preserve keys, only a problem with numeric repos.
              */
             $allRepositories = $allRepositories + $repositories;
+        }
+        if(!empty($urls)) {
+            foreach ($urls as $url) {
+                $repositories = $this->contactApi($url);
+
+                if (empty($repositories)) {
+                    throw new \RuntimeException('There are no repositories in ' . $url);
+                }
+
+                /**
+                 * Use "+" to preserve keys, only a problem with numeric repos.
+                 */
+                $allRepositories = $allRepositories + $repositories;
+            }
         }
 
         $allRepositories = array_unique($allRepositories, SORT_REGULAR);
@@ -229,6 +244,29 @@ class Client extends BaseClient
                 }
                 $repositories = array_merge($repositories, $this->recurseDirectory($file->getPathname(), false));
             }
+        }
+
+        return $repositories;
+    }
+
+    private function contactApi($url)
+    {
+        $repositories = [];
+//        $client = \Github\Client::createWithHttpClient(new \Http\Adapter\Guzzle6\Client());
+//        $gitHubRepos = $client->api('user')->repositories('garyee');
+
+        $client   = new \Github\Client();
+        $response = $client->getHttpClient()->get($url);
+        $gitHubRepos     = \Github\HttpClient\Message\ResponseMediator::getContent($response);
+
+
+        foreach ($gitHubRepos as $repo) {
+            $repositories[$repo["name"]] = array(
+                "name" =>$repo['name'],
+                "path"=>$repo['html_url'],
+                "description"=>$repo['description'],
+                "type"=>"GitHub"
+        );
         }
 
         return $repositories;

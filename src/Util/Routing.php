@@ -117,7 +117,7 @@ class Routing
                 function ($repo) {
                     return preg_quote($repo['name'], '#');
                 },
-                $this->app['git']->getRepositories($this->app['git.repos'])
+                $this->app['git']->getRepositories($this->app['git.repos'],$this->app['github.repos'])
             );
             usort(
                 $quotedPaths,

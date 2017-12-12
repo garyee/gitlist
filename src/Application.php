@@ -38,6 +38,7 @@ class Application extends SilexApplication
         $this['cache.archives'] = $this->getCachePath() . 'archives';
         $this['avatar.url'] = $config->get('avatar', 'url');
         $this['avatar.query'] = $config->get('avatar', 'query');
+        $this['github.repos'] = $config->get('github', 'repositories');
 
         // Register services
         $this->register(new TwigServiceProvider(), [

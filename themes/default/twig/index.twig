@@ -11,19 +11,36 @@
 
     <div class="list">
         {% for repository in repositories %}
-        <div class="repository">
-            <div class="repository-header">
-                <i class="icon-folder-open icon-spaced"></i> <a href="{{ path('repository', {repo: repository.name}) }}"><span class="name">{{ repository.name }}</span></a>
-                <a href="{{ path('rss', {repo: repository.name, branch: 'master'}) }}"><i class="rss pull-right"></i></a>
-            </div>
-            <div class="repository-body">
-                {% if repository.description %}
-                <p>{{ repository.description }}</p>
-                {% else %}
-                <p>There is no repository description file. Please, create one to remove this message.</p>
+            {% if repository.type is defined %}
+                {% if repository.type=="GitHub" is defined %}
+                    <div class="repository github">
+                        <div class="repository-header">
+                            <i class="fa fa-github-square"></i> <a target="_blank" href="{{repository.path}}"><span class="name">{{ repository.name }}</span></a>
+                        </div>
+                        <div class="repository-body">
+                            {% if repository.description %}
+                                <p>{{ repository.description }}</p>
+                            {% else %}
+                                <p>There is no repository description file. Please, create one to remove this message.</p>
+                            {% endif %}
+                        </div>
+                    </div>
                 {% endif %}
-            </div>
-        </div>
+            {% else %}
+                <div class="repository">
+                    <div class="repository-header">
+                        <i class="fa fa-git-square"></i> <a href="{{ path('repository', {repo: repository.name}) }}"><span class="name">{{ repository.name }}</span></a>
+                        <a href="{{ path('rss', {repo: repository.name, branch: 'master'}) }}"><i class="rss pull-right"></i></a>
+                    </div>
+                    <div class="repository-body">
+                        {% if repository.description %}
+                            <p>{{ repository.description }}</p>
+                        {% else %}
+                            <p>There is no repository description file. Please, create one to remove this message.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 
