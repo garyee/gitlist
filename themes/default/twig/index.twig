@@ -5,9 +5,13 @@
 {% include 'navigation.twig' %}
 
 <div class="container" id="repositories">
-    <div class="search">
-        <input class="search" placeholder="search" autofocus>
-    </div>
+        <div class="search pull-left">
+            <input class="search" placeholder="search" autofocus>
+        </div>
+        <div class="repo-sum pull-left" style="margin: 10px;color: #d7d7d7">
+            {{ repositories|length }}
+        </div>
+    <div class="clearfix"></div>
 
     <div class="list">
         {% for repository in repositories %}

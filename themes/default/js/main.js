@@ -91,6 +91,14 @@ if ($('#repositories').length) {
         valueNames: ['name']
     };
     var repoList = new List('repositories', listOptions);
+    repoList.on("searchComplete",function () {
+        if(repoList.searched || repoList.filtered ){
+            $('.repo-sum').html(repoList.matchingItems.length+"/"+repoList.items.length);
+        }else{
+            $('.repo-sum').html(repoList.items.length);
+        }
+
+    })
 }
 
 if ($('#branchList').length) {

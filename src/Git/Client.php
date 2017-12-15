@@ -10,6 +10,8 @@ class Client extends BaseClient
     protected $defaultBranch;
     protected $hidden;
     protected $projects;
+    protected $app;
+    protected $githubToken;
 
     public function __construct($options = null)
     {
@@ -17,6 +19,7 @@ class Client extends BaseClient
         $this->setDefaultBranch($options['default_branch']);
         $this->setHidden($options['hidden']);
         $this->setProjects($options['projects']);
+        $this->githubToken=$options['github_token'];
     }
 
     public function getRepositoryFromName($paths, $repo)
@@ -256,6 +259,9 @@ class Client extends BaseClient
 //        $gitHubRepos = $client->api('user')->repositories('garyee');
 
         $client   = new \Github\Client();
+        if(!empty($this->githubToken)) {
+            $client->authenticate($this->githubToken, null, \Github\Client::AUTH_HTTP_TOKEN);
+        }
         $response = $client->getHttpClient()->get($url);
         $gitHubRepos     = \Github\HttpClient\Message\ResponseMediator::getContent($response);
 
